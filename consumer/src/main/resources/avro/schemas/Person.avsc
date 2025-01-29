@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "Person",
+  "namespace": "ru.example.consumer.avro.schemas",
+  "fields": [
+    {
+      "name": "firstName",
+      "type": "string"
+    },
+    {
+      "name": "lastName",
+      "type": "string"
+    }
+  ]
+}
