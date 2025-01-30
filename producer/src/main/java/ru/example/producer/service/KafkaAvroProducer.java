@@ -15,7 +15,7 @@ public class KafkaAvroProducer {
 
     private final KafkaTemplate<String, Person> kafkaTemplate;
 
-    public void send(Person person) {
-        kafkaTemplate.send(topicName, person);
+    public void send(String msgKey, Person person) {
+        kafkaTemplate.send(topicName, msgKey, person);
     }
 }
