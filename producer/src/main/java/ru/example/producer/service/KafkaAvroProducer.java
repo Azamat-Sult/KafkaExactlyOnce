@@ -12,10 +12,18 @@ public class KafkaAvroProducer {
 
     @Value("${kafka.topics.person-topic}")
     private String topicName;
+    @Value("${spring.application.name}")
+    private String appName;
 
     private final KafkaTemplate<String, Person> kafkaTemplate;
 
     public void send(String msgKey, Person person) {
         kafkaTemplate.send(topicName, msgKey, person);
+    }
+
+    public void sendBatch(int batchSize) {
+        for (int count = 1; count <= batchSize; count++) {
+            send(String.valueOf(count) + " from " + appName, new Person("Ivan", "Ivanovich"));
+        }
     }
 }
