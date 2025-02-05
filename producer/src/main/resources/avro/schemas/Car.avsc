@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "Car",
+  "namespace": "ru.example.producer.avro.schemas",
+  "fields": [
+    {
+      "name": "model",
+      "type": "string"
+    },
+    {
+      "name": "serial",
+      "type": "int"
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.example.producer.service.KafkaAvroProducer;
 import ru.example.producer.avro.schemas.Person;
+import ru.example.producer.avro.schemas.Car;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,8 +19,14 @@ public class AvroController {
     }
 
     @GetMapping("/generateBatchOfPersons/{batchSize}")
-    public String sendPerson(@PathVariable("batchSize") int batchSize) {
+    public String sendBatch(@PathVariable("batchSize") int batchSize) {
         producer.sendBatch(batchSize);
         return "Batch of persons generated and published";
+    }
+
+    @PostMapping("/car")
+    public String sendCar(@RequestHeader("msgKey") String msgKey, @RequestBody Car car) {
+        producer.send(msgKey, car);
+        return "Info about car published";
     }
 }

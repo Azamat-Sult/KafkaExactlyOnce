@@ -10,9 +10,11 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.CommonErrorHandler;
 import org.springframework.kafka.listener.ContainerProperties;
 import ru.example.consumer.avro.schemas.Person;
 import ru.example.consumer1.deserializer.AvroDeserializer;
+import ru.example.consumer1.errorhandlers.KafkaErrorHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +29,7 @@ public class Config {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, Person> personKafkaListenerContainerFactory() {
         DefaultKafkaConsumerFactory<String, Person> consumerFactory = new DefaultKafkaConsumerFactory<>(consumerConfigs(), new StringDeserializer(), new AvroDeserializer<>(Person.class));
-        return getConcurrentKafkaListenerContainerFactory(consumerFactory);
+        return getConcurrentKafkaListenerContainerFactory(consumerFactory, new KafkaErrorHandler());
     }
 
     private Map<String, Object> consumerConfigs() {
@@ -40,11 +42,12 @@ public class Config {
         return props;
     }
 
-    private <T> ConcurrentKafkaListenerContainerFactory<String, T> getConcurrentKafkaListenerContainerFactory(ConsumerFactory<String, T> consumerFactory) {
+    private <T> ConcurrentKafkaListenerContainerFactory<String, T> getConcurrentKafkaListenerContainerFactory(ConsumerFactory<String, T> consumerFactory, CommonErrorHandler commonErrorHandler) {
         ConcurrentKafkaListenerContainerFactory<String, T> concurrentKafkaListenerContainerFactory = new ConcurrentKafkaListenerContainerFactory<>();
         concurrentKafkaListenerContainerFactory.setConsumerFactory(consumerFactory);
         concurrentKafkaListenerContainerFactory.setConcurrency(properties.getListener().getConcurrency());
         concurrentKafkaListenerContainerFactory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL_IMMEDIATE);
+        concurrentKafkaListenerContainerFactory.setCommonErrorHandler(commonErrorHandler);
         return concurrentKafkaListenerContainerFactory;
     }
 }

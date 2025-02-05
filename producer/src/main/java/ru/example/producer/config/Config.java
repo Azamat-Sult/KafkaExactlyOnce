@@ -11,6 +11,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import ru.example.producer.avro.schemas.Person;
+import ru.example.producer.avro.schemas.Car;
 import ru.example.producer.serializer.AvroSerializer;
 
 import java.util.HashMap;
@@ -31,12 +32,22 @@ public class Config {
     }
 
     @Bean
-    public ProducerFactory<String, Person> producerFactory() {
+    public ProducerFactory<String, Person> personProducerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs(), new StringSerializer(), new AvroSerializer<>(Person.class));
     }
 
     @Bean
-    public KafkaTemplate<String, Person> kafkaTemplate() {
-        return new KafkaTemplate<>(producerFactory());
+    public KafkaTemplate<String, Person> personKafkaTemplate() {
+        return new KafkaTemplate<>(personProducerFactory());
+    }
+
+    @Bean
+    public ProducerFactory<String, Car> carProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(producerConfigs(), new StringSerializer(), new AvroSerializer<>(Car.class));
+    }
+
+    @Bean
+    public KafkaTemplate<String, Car> carKafkaTemplate() {
+        return new KafkaTemplate<>(carProducerFactory());
     }
 }
